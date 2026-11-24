@@ -1,0 +1,48 @@
+// Сборка мода VR Support: из этой папки   ../../gradlew jar -PgameJar=путь/к/necraft-1.7.7.jar
+// Получится build/libs/vr-support.jar (вместе с OpenXR из LWJGL и его natives): положи в папку mods игры.
+plugins {
+    id 'java'
+}
+
+def lwjglVersion = '3.3.4'
+def gameJar = findProperty('gameJar') ?: '../../build/libs/necraft.jar'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    bundle
+}
+
+dependencies {
+    compileOnly files(gameJar)                          // классы игры и LWJGL (core, glfw, opengl) - они уже есть в игре
+    compileOnly "org.lwjgl:lwjgl-openxr:$lwjglVersion"
+    bundle "org.lwjgl:lwjgl-openxr:$lwjglVersion"
+    bundle "org.lwjgl:lwjgl-openxr:$lwjglVersion:natives-windows"
+    bundle "org.lwjgl:lwjgl-openxr:$lwjglVersion:natives-windows-arm64"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src']
+        resources.srcDirs = ['.']
+        resources.includes = ['necraft.mod.json']
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    archiveFileName = 'vr-support.jar'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.bundle.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}

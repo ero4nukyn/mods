@@ -1,0 +1,11 @@
+{
+  "id": "vr-support",
+  "name": "VR Support",
+  "version": "1.0",
+  "api": 2,
+  "game": ">=1.7.7",
+  "clientOnly": true,
+  "main": "vrsupport.VrSupportMod",
+  "author": "Necraft",
+  "description": "Поддержка VR-шлемов (OpenXR, Windows): голова крутится со шлемом, руки - на контроллерах, игра в одиночке и по сети. Команда /vr."
+}
